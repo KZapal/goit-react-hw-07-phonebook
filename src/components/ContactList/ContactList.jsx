@@ -16,7 +16,7 @@ const ContactList = () => {
 
   const filteredContacts = filter
     ? contactsList.filter(contact =>
-        contact.name.toLowerCase().includes(filter.text)
+        contact.name.toLowerCase().includes(filter)
       )
     : contactsList;
 
