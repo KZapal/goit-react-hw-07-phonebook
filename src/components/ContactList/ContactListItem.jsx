@@ -18,10 +18,12 @@ const ContactListItem = ({ contact }) => {
     localStorage.setItem('contacts', JSON.stringify(updatedContacts));
   };
 
+  const formattedNumber = contact.number.replace(/(\d{3})(?=\d)/g, '$1-');
+
   return (
     <div className={css.itemIn}>
       <span>
-        {contact.name}: {contact.number}
+        {contact.name}: {formattedNumber}
       </span>
       <button onClick={handleDelete} className={css.btn}>
         Delete
