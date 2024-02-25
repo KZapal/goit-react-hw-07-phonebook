@@ -1,27 +1,63 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { addContact, deleteContact, fetchContacts } from './operations';
 
-const savedContacts = JSON.parse(localStorage.getItem('contacts')) || [];
+const handlePending = state => {
+  state.isLoading = true;
+};
+
+const handleRejected = (state, action) => {
+  state.isLoading = false;
+  state.error = action.payload;
+};
+
+const isPendingAction = action => {
+  return action.type.endsWith('/pending');
+};
+
+const isRejectAction = action => {
+  return action.type.endsWith('/rejected');
+};
 
 const initialState = {
-  contacts: savedContacts,
+  items: [],
+  isLoading: false,
+  error: null,
 };
 
 export const contactsSlice = createSlice({
   name: 'contacts',
   initialState,
-  reducers: {
-    addContact(state, action) {
-      state.contacts.push(action.payload);
-    },
-
-    deleteContact(state, action) {
-      state.contacts = state.contacts.filter(
-        contact => contact.id !== action.payload
-      );
-    },
+  extraReducers: builder => {
+    builder
+      // .addCase(fetchContacts.pending, handlePending)
+      .addCase(fetchContacts.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.contacts = action.payload;
+      })
+      // .addCase(fetchContacts.rejected, handleRejected)
+      // .addCase(addContact.pending, handlePending)
+      .addCase(addContact.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.items.push(action.payload);
+      })
+      // .addCase(addContact.rejected, handleRejected)
+      // .addCase(deleteContact.pending, handlePending)
+      .addCase(deleteContact.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.contacts = state.contacts.filter(
+          contact => contact.id !== action.payload
+        );
+      })
+      .addMatcher(isPendingAction, handlePending)
+      .addMatcher(isRejectAction, handleRejected)
+      .addDefaultCase((state, acton) => {
+        state.error = 'someone use old function, fix it!';
+      });
+    // .addCase(deleteContact.rejected, handleRejected);
   },
 });
-
-export const { addContact, deleteContact } = contactsSlice.actions;
 
 export const contactsReducer = contactsSlice.reducer;
