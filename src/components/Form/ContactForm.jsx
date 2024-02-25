@@ -15,9 +15,11 @@ const ContactForm = () => {
     const number = form.elements.number.value;
     form.reset();
 
+    const formattedNumber = number.replace(/(\d{3})(?=\d)/g, '$1-');
+
     const newContact = {
       name: name,
-      number: number,
+      number: formattedNumber,
       id: nanoid(),
     };
     dispatch(addContact(newContact));
