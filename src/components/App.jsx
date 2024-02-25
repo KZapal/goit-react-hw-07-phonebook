@@ -21,8 +21,8 @@ const App = () => {
       <h2 className={css.header}>Phone Book</h2>
       <ContactForm />
       <h2 className={css.header}>Contacts</h2>
-      {isLoading && !error && <b>Request in progress...</b>}
       <Filter />
+      {isLoading && !error && <b>Request in progress...</b>}
       <ContactList />
     </div>
   );
